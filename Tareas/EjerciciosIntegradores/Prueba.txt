@@ -1,0 +1,15 @@
+4. Cómo podemos saber de dónde son los tuiteros que más tiempo tienen en la plataforma?
+db.tweets.aggregate([
+	{$group: {_id:"$user.lang", "antiguos": {$min:"$user.id"}}},
+	{$lookup: {from:"primarydialects","localField":"_id","foreignField":"lang","as":"language"}},
+	{$lookup: {from:"languagenames","localField":"language.locale","foreignField":"locale","as":"fulllocale"}},
+	{$project:{"fulllocale":0}},
+	{$sort:{"antiguos":-1}}
+])
+
+5. En intervalos de 7:00:00pm a 6:59:59am y de 7:00:00am a 6:59:59pm, de qué paises la mayoría de los tuits?
+
+6. De qué país son los tuiteros más famosos de nuestra colección?
+db.tweets.aggregate([
+	{$group: {_id:"$user.time_zone", "totalFollowers": {$max:"$user.followers_count"}}}
+])
